@@ -2,20 +2,20 @@ package bullscows
 
 import kotlin.random.Random
 
-fun gradeGuess() {
+fun gradeGuess(secretCode: String, guess: String): List<String> {
+    val result: List<String>
     var bulls = 0
     var cows = 0
-    val secretCode = Random.nextInt(1000, 10000).toString()
-    var guess = readln()
+    var solved = false
 
-    for (i in 0..3) {
+    for (i in 0 until secretCode.length) {
         if (guess[i] == secretCode[i]) {
             bulls++
         }
     }
 
-    for (i in 0..3) {
-        for (j in 0..3) {
+    for (i in 0 until guess.length) {
+        for (j in 0 until secretCode.length) {
             if (guess[i] == secretCode[j]) {
                 cows++
             }
@@ -38,13 +38,16 @@ fun gradeGuess() {
         if (cows == 0 && bulls == 0) {
             append("None")
         }
-        append(". The secret code is $secretCode.")
     }
-
-    println(output)
+    if (bulls == secretCode.length) {
+        solved = true
+    }
+    result = listOf(output, solved.toString())
+    return result
 }
 
-fun main() {
+fun generateSecretCode(): String {
+    println("Please, enter the secret code's length:")
     val size = readln().toInt()
     var result = ""
 
@@ -62,11 +65,9 @@ fun main() {
                     result += pseudoRandomNumber[j]
                     uniqueDigits.remove(pseudoRandomNumber[j])
                     i++
-                    j--
-                } else {
-                    j--
                 }
             }
+            j--
         }
         // if not enough unique digits in pseudoRandomNumber fill with random entries from uniqueDigits
         while (result.length < size) {
@@ -74,7 +75,25 @@ fun main() {
             uniqueDigits.remove(result[result.lastIndex])
         }
     }
+    return result
+}
 
-    println("The random secret number is $result")
+fun main() {
+    var result: List<String> = listOf("", "false")
+    val secretCode = generateSecretCode()
+    var guess = ""
+    println("Okay, let's start a game!")
+
+    var i = 1
+    while (result[1] == "false") {
+        println("Turn $i:")
+        guess = readln()
+        result = gradeGuess(secretCode, guess)
+
+        println(result[0])
+        i++
+    }
+
+    println("Congratulations! You guessed the secret code.")
 
 }
