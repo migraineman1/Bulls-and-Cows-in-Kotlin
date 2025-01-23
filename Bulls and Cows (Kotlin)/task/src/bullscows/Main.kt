@@ -54,22 +54,8 @@ fun generateSecretCode(): String {
     if (size > 10) {
         println("Error: can't generate a secret number with a length of $size because there aren't enough unique digits.")
     } else {
-        val pseudoRandomNumber: String = System.nanoTime().toString()
         val uniqueDigits = mutableSetOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
-        var i = 0
-        var j = pseudoRandomNumber.lastIndex
-
-        while (i < size && j >= 0) {
-            if (uniqueDigits.contains(pseudoRandomNumber[j])) {
-                if (!(i == 0 && pseudoRandomNumber[j] == '0')) {
-                    result += pseudoRandomNumber[j]
-                    uniqueDigits.remove(pseudoRandomNumber[j])
-                    i++
-                }
-            }
-            j--
-        }
-        // if not enough unique digits in pseudoRandomNumber fill with random entries from uniqueDigits
+        // generate secret code
         while (result.length < size) {
             result += uniqueDigits.random()
             uniqueDigits.remove(result[result.lastIndex])
