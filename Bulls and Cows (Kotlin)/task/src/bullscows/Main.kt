@@ -47,20 +47,39 @@ fun gradeGuess(secretCode: String, guess: String): List<String> {
 }
 
 fun generateSecretCode(): String {
-    println("Please, enter the secret code's length:")
+    println("Input the length of the secret code:")
     val size = readln().toInt()
+    println("Input the number of possible symbols in the code:")
+    val numberOfSymbols = readln().toInt()
     var result = ""
+    val uniqueCharacters: List<Char> = listOf('0'..'9', 'a'..'z').flatten().toList()
+    val usableCharacters = uniqueCharacters.subList(0, numberOfSymbols).toMutableList()
 
-    if (size > 10) {
-        println("Error: can't generate a secret number with a length of $size because there aren't enough unique digits.")
-    } else {
-        val uniqueDigits = mutableSetOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
-        // generate secret code
-        while (result.length < size) {
-            result += uniqueDigits.random()
-            uniqueDigits.remove(result[result.lastIndex])
+    // generate secret code
+    while (result.length < size) {
+        result += usableCharacters.random()
+        usableCharacters.remove(result[result.lastIndex])
+    }
+
+    val output = buildString {
+        append("The secret is prepared: ")
+        for (i in 1..size) {
+            append("*")
+        }
+        append(" (0-")
+        if (numberOfSymbols <= 10) {
+            append(numberOfSymbols - 1)
+            append(")")
+        } else {
+            append("9, a-")
+            // size - 10 (for the digits) + 96 (offset to lower case a in ascii table)
+            append((numberOfSymbols + 86).toChar())
+            append(").")
         }
     }
+
+    println(output)
+
     return result
 }
 
