@@ -1,6 +1,7 @@
 package bullscows
 
 import kotlin.random.Random
+import kotlin.system.exitProcess
 
 fun gradeGuess(secretCode: String, guess: String): List<String> {
     val result: List<String>
@@ -47,10 +48,35 @@ fun gradeGuess(secretCode: String, guess: String): List<String> {
 }
 
 fun generateSecretCode(): String {
+    val numberRegex = "\\d+".toRegex()
+    val isNumber = numberRegex::matches
     println("Input the length of the secret code:")
-    val size = readln().toInt()
+    var input = readln()
+    if (!isNumber(input)) {
+        println("Error: \"$input\" isn't a valid number.\n")
+        exitProcess(0)
+    }
+
+    val size = input.toInt()
+
     println("Input the number of possible symbols in the code:")
-    val numberOfSymbols = readln().toInt()
+    input = readln()
+    if (!isNumber(input)) {
+        println("Error: \"$input\" isn't a valid number.\n")
+        exitProcess(0)
+    }
+
+    val numberOfSymbols = input.toInt()
+    if (numberOfSymbols < size) {
+        println("Error: it's not possible to generate a code with a length of $size with $numberOfSymbols unique symbols.")
+        exitProcess(0)
+    }
+
+    if (numberOfSymbols > 36) {
+        println("Error: maximum number of possible symbols in the code is 36 (0-9, a-z).")
+        exitProcess(0)
+    }
+
     var result = ""
     val uniqueCharacters: List<Char> = listOf('0'..'9', 'a'..'z').flatten().toList()
     val usableCharacters = uniqueCharacters.subList(0, numberOfSymbols).toMutableList()
